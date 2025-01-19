@@ -4,6 +4,9 @@ A fast local Ethereum development node
 
 ```bash
 $ anvil --help
+```
+
+```txt
 Usage: anvil [OPTIONS] [COMMAND]
 
 Commands:
@@ -27,7 +30,7 @@ Options:
           
           [default: 10000]
 
-      --config-out <OUT_FILE>
+      --config-out <FILE>
           Writes output of `anvil` as json to user-specified file
 
       --derivation-path <DERIVATION_PATH>
@@ -36,9 +39,11 @@ Options:
           [default: m/44'/60'/0'/0/]
 
       --dump-state <PATH>
-          Dump the state and block environment of chain on exit to the given file.
+          Dump the state and block environment of chain on exit to the given
+          file.
           
-          If the value is a directory, the state will be written to `<VALUE>/state.json`.
+          If the value is a directory, the state will be written to
+          `<VALUE>/state.json`.
 
   -h, --help
           Print help (see a summary with '-h')
@@ -46,34 +51,50 @@ Options:
       --hardfork <HARDFORK>
           The EVM hardfork to use.
           
-          Choose the hardfork by name, e.g. `shanghai`, `paris`, `london`, etc... [default: latest]
+          Choose the hardfork by name, e.g. `cancun`, `shanghai`, `paris`,
+          `london`, etc... [default: latest]
 
       --init <PATH>
           Initialize the genesis block with the given `genesis.json` file
 
       --ipc [<PATH>]
-          Launch an ipc server at the given path or default path = `/tmp/anvil.ipc`
+          Launch an ipc server at the given path or default path =
+          `/tmp/anvil.ipc`
           
           [aliases: ipcpath]
+
+  -j, --threads <THREADS>
+          Number of threads to use. Specifying 0 defaults to the number of
+          logical cores
+          
+          [aliases: jobs]
 
       --load-state <PATH>
           Initialize the chain from a previously saved state snapshot
 
   -m, --mnemonic <MNEMONIC>
-          BIP39 mnemonic phrase used for generating accounts. Cannot be used if `mnemonic_random` or
-          `mnemonic_seed` are used
+          BIP39 mnemonic phrase used for generating accounts. Cannot be used if
+          `mnemonic_random` or `mnemonic_seed` are used
+
+      --max-persisted-states <MAX_PERSISTED_STATES>
+          Max number of states to persist on disk.
+          
+          Note that `prune_history` will overwrite `max_persisted_states` to 0.
+
+      --mixed-mining
+          [aliases: mixed-mining]
 
       --mnemonic-random [<MNEMONIC_RANDOM>]
-          Automatically generates a BIP39 mnemonic phrase, and derives accounts from it. Cannot be
-          used with other `mnemonic` options You can specify the number of words you want in the
-          mnemonic. [default: 12]
+          Automatically generates a BIP39 mnemonic phrase, and derives accounts
+          from it. Cannot be used with other `mnemonic` options. You can specify
+          the number of words you want in the mnemonic. [default: 12]
 
       --mnemonic-seed-unsafe <MNEMONIC_SEED>
-          Generates a BIP39 mnemonic phrase from a given seed Cannot be used with other `mnemonic`
-          options
+          Generates a BIP39 mnemonic phrase from a given seed Cannot be used
+          with other `mnemonic` options.
           
-          CAREFUL: this is NOT SAFE and should only be used for testing. Never use the private keys
-          generated in production.
+          CAREFUL: This is NOT SAFE and should only be used for testing. Never
+          use the private keys generated in production.
 
       --no-mining
           Disable auto and interval mining, and mine on demand instead
@@ -90,17 +111,28 @@ Options:
           
           [default: 8545]
 
+      --preserve-historical-states
+          Preserve historical state snapshots when dumping the state.
+          
+          This will save the in-memory states of the chain at particular block
+          hashes.
+          
+          These historical states will be loaded into the memory when
+          `--load-state` / `--state`, and aids in RPC calls beyond the block at
+          which state was dumped.
+
       --prune-history [<PRUNE_HISTORY>]
-          Don't keep full chain history. If a number argument is specified, at most this number of
-          states is kept in memory
+          Don't keep full chain history. If a number argument is specified, at
+          most this number of states is kept in memory.
+          
+          If enabled, no state will be persisted on disk, so
+          `max_persisted_states` will be 0.
 
   -s, --state-interval <SECONDS>
-          Interval in seconds at which the state and block environment is to be dumped to disk.
+          Interval in seconds at which the state and block environment is to be
+          dumped to disk.
           
           See --state and --dump-state
-
-      --silent
-          Don't print anything on startup and don't print logs
 
       --slots-in-an-epoch <SLOTS_IN_AN_EPOCH>
           Slots in an epoch
@@ -110,8 +142,8 @@ Options:
       --state <PATH>
           This is an alias for both --load-state and --dump-state.
           
-          It initializes the chain with the state and block environment stored at the file, if it
-          exists, and dumps the chain's state on exit.
+          It initializes the chain with the state and block environment stored
+          at the file, if it exists, and dumps the chain's state on exit.
 
       --timestamp <NUM>
           The timestamp of the genesis block
@@ -122,11 +154,44 @@ Options:
   -V, --version
           Print version
 
+Display options:
+      --color <COLOR>
+          The color of the log messages
+
+          Possible values:
+          - auto:   Intelligently guess whether to use color output (default)
+          - always: Force color output
+          - never:  Force disable color output
+
+      --json
+          Format log messages as JSON
+
+  -q, --quiet
+          Do not print log messages
+
+  -v, --verbosity...
+          Verbosity level of the log messages.
+          
+          Pass multiple times to increase the verbosity (e.g. -v, -vv, -vvv).
+          
+          Depending on the context the verbosity levels have different meanings.
+          
+          For example, the verbosity levels of the EVM are:
+          - 2 (-vv): Print logs for all tests.
+          - 3 (-vvv): Print execution traces for failing tests.
+          - 4 (-vvvv): Print execution traces for all tests, and setup traces
+          for failing tests.
+          - 5 (-vvvvv): Print execution and setup traces for all tests,
+          including storage changes.
+
 Server options:
       --allow-origin <ALLOW_ORIGIN>
-          Set the CORS allow_origin
+          The cors `allow_origin` header
           
           [default: *]
+
+      --cache-path <PATH>
+          Path to the cache directory where states are stored
 
       --host <IP_ADDR>
           The hosts the server will listen on
@@ -137,20 +202,27 @@ Server options:
       --no-cors
           Disable CORS
 
+      --no-request-size-limit
+          Disable the default request body size limit. At time of writing the
+          default limit is 2MB
+
 Fork config:
       --compute-units-per-second <CUPS>
-          Sets the number of assumed available compute units per second for this provider
+          Sets the number of assumed available compute units per second for this
+          provider
           
           default value: 330
           
-          See --fork-url. See also,
-          https://docs.alchemy.com/reference/compute-units#what-are-cups-compute-units-per-second
+          See also --fork-url and
+          <https://docs.alchemy.com/reference/compute-units#what-are-cups-compute-units-per-second>
 
   -f, --fork-url <URL>
-          Fetch state over a remote endpoint instead of starting from an empty state.
+          Fetch state over a remote endpoint instead of starting from an empty
+          state.
           
-          If you want to fetch state from a specific block number, add a block number like
-          `http://localhost:8545@1400000` or use the `--fork-block-number` argument.
+          If you want to fetch state from a specific block number, add a block
+          number like `http://localhost:8545@1400000` or use the
+          `--fork-block-number` argument.
           
           [aliases: rpc-url]
 
@@ -160,11 +232,12 @@ Fork config:
           See --fork-url.
 
       --fork-chain-id <CHAIN>
-          Specify chain id to skip fetching it from remote endpoint. This enables offline-start
-          mode.
+          Specify chain id to skip fetching it from remote endpoint. This
+          enables offline-start mode.
           
-          You still must pass both `--fork-url` and `--fork-block-number`, and already have your
-          required state cached on disk, anything missing locally would be fetched from the remote.
+          You still must pass both `--fork-url` and `--fork-block-number`, and
+          already have your required state cached on disk, anything missing
+          locally would be fetched from the remote.
 
       --fork-header <HEADERS>
           Headers to use for the rpc client, e.g. "User-Agent: test-agent"
@@ -176,13 +249,18 @@ Fork config:
           
           See --fork-url.
 
+      --fork-transaction-hash <TRANSACTION>
+          Fetch state from a specific transaction hash over a remote endpoint.
+          
+          See --fork-url.
+
       --no-rate-limit
           Disables rate limiting for this node's provider.
           
           default value: false
           
-          See --fork-url. See also,
-          https://docs.alchemy.com/reference/compute-units#what-are-cups-compute-units-per-second
+          See also --fork-url and
+          <https://docs.alchemy.com/reference/compute-units#what-are-cups-compute-units-per-second>
           
           [aliases: no-rpc-rate-limit]
 
@@ -201,7 +279,8 @@ Fork config:
           Default value 5
 
       --timeout <timeout>
-          Timeout in ms for requests sent to remote JSON-RPC server in forking mode.
+          Timeout in ms for requests sent to remote JSON-RPC server in forking
+          mode.
           
           Default value 45000
 
@@ -215,11 +294,20 @@ Environment config:
           The chain ID
 
       --code-size-limit <CODE_SIZE>
-          EIP-170: Contract code size limit in bytes. Useful to increase this because of tests. By
-          default, it is 0x6000 (~25kb)
+          EIP-170: Contract code size limit in bytes. Useful to increase this
+          because of tests. To disable entirely, use
+          `--disable-code-size-limit`. By default, it is 0x6000 (~25kb)
 
       --disable-block-gas-limit
           Disable the `call.gas_limit <= block.gas_limit` constraint
+
+      --disable-code-size-limit
+          Disable EIP-170: Contract code size limit
+
+      --disable-min-priority-fee
+          Disable the enforcement of a minimum suggested priority fee
+          
+          [aliases: no-priority-fee]
 
       --gas-limit <GAS_LIMIT>
           The block gas limit
@@ -229,9 +317,16 @@ Environment config:
 
 EVM options:
       --auto-impersonate
-          Enable autoImpersonate on startup
+          Enables automatic impersonation on startup. This allows any
+          transaction sender to be simulated as different accounts, which is
+          useful for testing contract behavior
           
-          [aliases: auto-impersonate]
+          [aliases: auto-unlock]
+
+      --disable-console-log
+          Disable printing of `console.log` invocations to stdout
+          
+          [aliases: no-console-log]
 
       --disable-default-create2-deployer
           Disable the default create2 deployer
@@ -240,6 +335,9 @@ EVM options:
 
       --memory-limit <MEMORY_LIMIT>
           The memory limit per EVM execution in bytes
+
+      --odyssey
+          Enable Odyssey features
 
       --optimism
           Run an Optimism chain

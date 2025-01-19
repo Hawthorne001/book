@@ -307,12 +307,34 @@ interface CheatCodes {
     // function will be mocked.
     function mockCall(address, bytes calldata, bytes calldata) external;
 
+    /// Mocks a call to an address with a specific `msg.value`, returning specified data.
+    /// Calldata match takes precedence over `msg.value` in case of ambiguity.
+    function mockCall(address, uint256, bytes calldata, bytes calldata) external;
+
+    // Mocks multiple call to an address, returning specified data for each call.
+    //
+    // Calldata can either be strict or a partial match, e.g. if you only
+    // pass a Solidity selector to the expected calldata, then the entire Solidity
+    // function will be mocked.
+    function mockCalls(address, bytes calldata, bytes[] calldata) external;
+
+    /// Mocks multiple calls to an address with a specific `msg.value`, returning specified data for each call.
+    function mockCalls(address, uint256, bytes calldata, bytes[] calldata) external;
+
     // Reverts a call to an address, returning the specified error
     //
     // Calldata can either be strict or a partial match, e.g. if you only
     // pass a Solidity selector to the expected calldata, then the entire Solidity
     // function will be mocked.
     function mockCallRevert(address where, bytes calldata data, bytes calldata retdata) external;
+
+    /// Whenever a call is made to `callee` with calldata `data`, this cheatcode instead calls
+    /// `target` with the same calldata. This functionality is similar to a delegate call made to
+    /// `target` contract from `callee`.
+    /// Can be used to substitute a call to a function with another implementation that captures
+    /// the primary logic of the original function but is easier to reason about.
+    /// If calldata is not a strict match then partial match by selector is attempted.
+    function mockFunction(address callee, address target, bytes calldata data) external;
 
     // Clears all mocked and reverted mocked calls
     function clearMockedCalls() external;
@@ -338,6 +360,9 @@ interface CheatCodes {
 
     // When fuzzing, generate new inputs if conditional not met
     function assume(bool) external;
+
+    /// Discard this run's fuzz inputs and generate new ones if next call reverted.
+    function assumeNoRevert() external;
 
     // Set block.coinbase (who)
     function coinbase(address) external;
@@ -459,5 +484,11 @@ interface CheatCodes {
     function rpcUrl(string calldata) external returns (string memory);
     /// Returns all rpc urls and their aliases `[alias, url][]`
     function rpcUrls() external returns (string[2][] memory);
+
+    /// Utility cheatcode to copy storage of `from` contract to another `to` contract.
+    function copyStorage(address from, address to) external;
+
+    /// Utility cheatcode to set arbitrary storage for given target address.
+    function setArbitraryStorage(address target) external;
 }
 ```

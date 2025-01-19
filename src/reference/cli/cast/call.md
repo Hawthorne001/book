@@ -4,6 +4,9 @@ Perform a call on an account without publishing a transaction
 
 ```bash
 $ cast call --help
+```
+
+```txt
 Usage: cast call [OPTIONS] [TO] [SIG] [ARGS]... [COMMAND]
 
 Commands:
@@ -25,13 +28,18 @@ Options:
           Data for the transaction
 
       --trace
-          Forks the remote rpc, executes the transaction locally and prints a trace
+          Forks the remote rpc, executes the transaction locally and prints a
+          trace
 
       --debug
           Opens an interactive debugger. Can only be used with `--trace`
 
+      --decode-internal
+          
+
       --labels <LABELS>
-          Labels to apply to the traces; format: `address:label`. Can only be used with `--trace`
+          Labels to apply to the traces; format: `address:label`. Can only be
+          used with `--trace`
 
       --evm-version <EVM_VERSION>
           The EVM Version to use. Can only be used with `--trace`
@@ -41,8 +49,17 @@ Options:
           
           Can also be the tags earliest, finalized, safe, latest, or pending.
 
+      --odyssey
+          Enable Odyssey features
+
   -h, --help
           Print help (see a summary with '-h')
+
+  -j, --threads <THREADS>
+          Number of threads to use. Specifying 0 defaults to the number of
+          logical cores
+          
+          [aliases: jobs]
 
 Transaction options:
       --gas-limit <GAS_LIMIT>
@@ -51,7 +68,11 @@ Transaction options:
           [env: ETH_GAS_LIMIT=]
 
       --gas-price <PRICE>
-          Gas price for legacy transactions, or max fee per gas for EIP1559 transactions
+          Gas price for legacy transactions, or max fee per gas for EIP1559
+          transactions, either specified in wei, or as a string with a unit
+          type.
+          
+          Examples: 1ether, 10gwei, 0.01ether
           
           [env: ETH_GAS_PRICE=]
 
@@ -61,8 +82,8 @@ Transaction options:
           [env: ETH_PRIORITY_GAS_PRICE=]
 
       --value <VALUE>
-          Ether to send in the transaction, either specified in wei, or as a string with a unit
-          type.
+          Ether to send in the transaction, either specified in wei, or as a
+          string with a unit type.
           
           Examples: 1ether, 10gwei, 0.01ether
 
@@ -74,6 +95,26 @@ Transaction options:
           
           This is automatically enabled for common networks without EIP1559.
 
+      --blob
+          Send a EIP-4844 blob transaction
+
+      --blob-gas-price <BLOB_PRICE>
+          Gas price for EIP-4844 blob transaction
+          
+          [env: ETH_BLOB_GAS_PRICE=]
+
+      --auth <AUTH>
+          EIP-7702 authorization list.
+          
+          Can be either a hex-encoded signed authorization or an address.
+
+      --access-list [<ACCESS_LIST>]
+          EIP-2930 access list.
+          
+          Accepts either a JSON-encoded access list or an empty value to create
+          the access list via an RPC call to `eth_createAccessList`. To retrieve
+          only the access list portion, use the `cast access-list` command.
+
 Ethereum options:
   -r, --rpc-url <URL>
           The RPC endpoint
@@ -81,15 +122,20 @@ Ethereum options:
           [env: ETH_RPC_URL=]
 
       --flashbots
-          Use the Flashbots RPC URL with fast mode (https://rpc.flashbots.net/fast). This shares the
-          transaction privately with all registered builders.
-          https://docs.flashbots.net/flashbots-protect/quick-start#faster-transactions
+          Use the Flashbots RPC URL with fast mode
+          (<https://rpc.flashbots.net/fast>).
+          
+          This shares the transaction privately with all registered builders.
+          
+          See:
+          <https://docs.flashbots.net/flashbots-protect/quick-start#faster-transactions>
 
       --jwt-secret <JWT_SECRET>
           JWT Secret for the RPC endpoint.
           
-          The JWT secret will be used to create a JWT for a RPC. For example, the following can be
-          used to simulate a CL `engine_forkchoiceUpdated` call:
+          The JWT secret will be used to create a JWT for a RPC. For example,
+          the following can be used to simulate a CL `engine_forkchoiceUpdated`
+          call:
           
           cast rpc --jwt-secret <JWT_SECRET> engine_forkchoiceUpdatedV2
           '["0x6bb38c26db65749ab6e472080a3d20a2f35776494e72016d1e339593f21c59bc",
@@ -97,6 +143,21 @@ Ethereum options:
           "0x6bb38c26db65749ab6e472080a3d20a2f35776494e72016d1e339593f21c59bc"]'
           
           [env: ETH_RPC_JWT_SECRET=]
+
+      --rpc-timeout <RPC_TIMEOUT>
+          Timeout for the RPC request in seconds.
+          
+          The specified timeout will be used to override the default timeout for
+          RPC requests.
+          
+          Default value: 45
+          
+          [env: ETH_RPC_TIMEOUT=]
+
+      --rpc-headers <RPC_HEADERS>
+          Specify custom headers for RPC requests
+          
+          [env: ETH_RPC_HEADERS=]
 
   -e, --etherscan-api-key <KEY>
           The Etherscan (or equivalent) API key
@@ -138,6 +199,11 @@ Wallet options - raw:
           
           [default: 0]
 
+      --with-local-artifacts
+          Use current project artifacts for trace decoding
+          
+          [aliases: la]
+
 Wallet options - keystore:
       --keystore <PATH>
           Use the keystore in the given folder or file
@@ -145,7 +211,8 @@ Wallet options - keystore:
           [env: ETH_KEYSTORE=]
 
       --account <ACCOUNT_NAME>
-          Use a keystore from the default keystores folder (~/.foundry/keystores) by its filename
+          Use a keystore from the default keystores folder
+          (~/.foundry/keystores) by its filename
           
           [env: ETH_KEYSTORE_ACCOUNT=]
 
@@ -168,7 +235,37 @@ Wallet options - hardware wallet:
   -t, --trezor
           Use a Trezor hardware wallet
 
-Wallet options - AWS KMS:
+Wallet options - remote:
       --aws
           Use AWS Key Management Service
+
+Display options:
+      --color <COLOR>
+          The color of the log messages
+
+          Possible values:
+          - auto:   Intelligently guess whether to use color output (default)
+          - always: Force color output
+          - never:  Force disable color output
+
+      --json
+          Format log messages as JSON
+
+  -q, --quiet
+          Do not print log messages
+
+  -v, --verbosity...
+          Verbosity level of the log messages.
+          
+          Pass multiple times to increase the verbosity (e.g. -v, -vv, -vvv).
+          
+          Depending on the context the verbosity levels have different meanings.
+          
+          For example, the verbosity levels of the EVM are:
+          - 2 (-vv): Print logs for all tests.
+          - 3 (-vvv): Print execution traces for failing tests.
+          - 4 (-vvvv): Print execution traces for all tests, and setup traces
+          for failing tests.
+          - 5 (-vvvvv): Print execution and setup traces for all tests,
+          including storage changes.
 ```
