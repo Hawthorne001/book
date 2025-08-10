@@ -35,7 +35,7 @@ Options:
           The signature of the function you want to call in the contract, or raw
           calldata
           
-          [default: run()]
+          [default: run]
 
       --priority-gas-price <PRICE>
           Max priority fee per gas for EIP1559 transactions
@@ -515,8 +515,6 @@ Executor environment config:
 Verifier options:
       --verifier <VERIFIER>
           The contract verification provider to use
-          
-          [default: sourcify]
 
           Possible values:
           - etherscan
@@ -525,6 +523,8 @@ Verifier options:
           - oklink
           - custom:     Custom verification provider, requires compatibility
             with the Etherscan API
+          
+          [default: sourcify]
 
       --verifier-api-key <VERIFIER_API_KEY>
           The verifier API KEY, if using a custom provider
