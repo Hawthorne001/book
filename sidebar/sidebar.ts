@@ -62,6 +62,7 @@ const docs = [
               { text: "incorrect-erc721-interface", link: "/forge/linting/incorrect-erc721-interface" },
               { text: "low-level-calls", link: "/forge/linting/low-level-calls" },
               { text: "tx-origin", link: "/forge/linting/tx-origin" },
+              { text: "type-based-tautology", link: "/forge/linting/type-based-tautology" },
               { text: "uninitialized-local", link: "/forge/linting/uninitialized-local" },
               { text: "unsafe-typecast", link: "/forge/linting/unsafe-typecast" },
               { text: "weak-prng", link: "/forge/linting/weak-prng" },
