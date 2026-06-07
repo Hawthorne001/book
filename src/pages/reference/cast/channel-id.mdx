@@ -1,36 +1,50 @@
-## cast tx
+## cast channel-id
 
-Get information about a transaction
+Compute a Tempo TIP-20 channel reserve channel ID
 
 :::terminal
 
 ```bash
-$ cast tx --help
+$ cast channel-id --help
 ```
 
 ```txt
-Usage: cast tx [OPTIONS] [TX_HASH] [FIELD]
+Usage: cast channel-id [OPTIONS] <PAYER> <PAYEE> <TOKEN> <SALT>
 
 Arguments:
-  [TX_HASH]
-          The transaction hash
+  <PAYER>
+          Channel payer address
 
-  [FIELD]
-          If specified, only get the given field of the transaction. If "raw",
-          the RLP encoded transaction will be printed
+  <PAYEE>
+          Channel payee address
+
+  <TOKEN>
+          TIP-20 token address locked by the channel
+
+  <SALT>
+          User-supplied channel salt
 
 Options:
-      --from <FROM>
-          The sender of the transaction
+      --operator <OPERATOR>
+          Optional relayer allowed to submit settlements for the payee
 
-      --nonce <NONCE>
-          Nonce of the transaction
+      --authorized-signer <AUTHORIZED_SIGNER>
+          Optional voucher signer. Defaults to the zero address, meaning the
+          payer signs
 
-      --raw
-          Print the raw RLP encoded transaction
+      --expiring-nonce-hash <EXPIRING_NONCE_HASH>
+          Transaction-derived expiring nonce hash from ChannelOpened
+          
+          [default:
+          0x0000000000000000000000000000000000000000000000000000000000000000]
 
-      --lane
-          Classify the transaction as Tempo T5 payment/general lane
+      --reserve <RESERVE>
+          Channel reserve precompile address
+
+  -B, --block <BLOCK>
+          The block height to query at.
+          
+          Can also be the tags earliest, finalized, safe, latest, or pending.
 
   -h, --help
           Print help (see a summary with '-h')
@@ -118,15 +132,6 @@ Rpc options:
 
       --curl
           Print the equivalent curl command instead of making the RPC request
-
-      --to-request
-          If specified, the transaction will be converted to a
-          TransactionRequest JSON format
-
-  -n, --network <NETWORK>
-          Specify the Network for correct encoding
-          
-          [possible values: ethereum, tempo]
 
 Display options:
       --color <COLOR>

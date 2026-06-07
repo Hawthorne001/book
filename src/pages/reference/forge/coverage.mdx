@@ -15,12 +15,13 @@ Options:
       --report <REPORT>
           The report type to use for coverage.
           
-          This flag can be used multiple times.
+          This flag can be used multiple times. Falls back to the
+          `[profile.<name>.coverage] report` config value when not provided
+          (default: `summary`).
           
-          [default: summary]
           [possible values: summary, lcov, debug, bytecode]
 
-      --lcov-version <LCOV_VERSION>
+      --lcov-version <LCOV_VERSION_CLI>
           The version of the LCOV "tracefile" format to use.
           
           Format: `MAJOR[.MINOR]`.
@@ -29,7 +30,8 @@ Options:
           support for "line end" numbers for functions. - `2.2`: Changes the
           format of functions.
           
-          [default: 1]
+          Falls back to the `[profile.<name>.coverage] lcov_version` config
+          value when not provided.
 
       --ir-minimum
           Enable viaIR with minimum optimization
@@ -198,6 +200,12 @@ Test options:
 
       --fuzz-runs <RUNS>
           [env: FOUNDRY_FUZZ_RUNS=]
+
+      --invariant-workers <WORKERS>
+          Number of workers to use for invariant test campaigns, or `auto` to
+          derive from `--jobs`
+          
+          [env: FOUNDRY_INVARIANT_WORKERS=]
 
       --fuzz-run <RUN>
           Run only the fuzz case at the given 1-based run index
@@ -640,6 +648,32 @@ Watch options:
           
           When using --poll mode, you'll want a larger duration, or risk
           overloading disk I/O.
+
+      --mutate [<PATH>...]
+          Enable mutation testing. If passed with file paths, only those files
+          will be tested
+
+      --mutate-path <PATTERN>
+          Specify which files to mutate with glob pattern matching.
+          
+          Mutually exclusive with passing explicit paths to `--mutate`; either
+          supply paths to `--mutate` or use this glob filter, not both.
+
+      --mutate-contract <REGEX>
+          Only mutate contracts whose name matches the specified regex pattern.
+          
+          Mutually exclusive with `--mutate-path`.
+
+      --mutation-jobs <JOBS>
+          Number of parallel workers for mutation testing. Defaults to the
+          number of CPU cores
+
+      --mutation-timeout <TIMEOUT>
+          Best-effort per-mutant wall-clock timeout in seconds. Mutants that
+          exceed it are recorded as "timed out" and cleanup continues in the
+          background with bounded pending workers.
+          
+          Analogous to `--invariant-timeout` for invariant campaigns.
 ```
 
 :::
