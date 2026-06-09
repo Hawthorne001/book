@@ -1,53 +1,45 @@
-## cast keychain authorize
+## cast wallet session
 
-Authorize a new key on-chain via the AccountKeychain precompile
+Manage temporary Tempo wallet sessions
 
 :::terminal
 
 ```bash
-$ cast keychain authorize --help
+$ cast wallet session --help
 ```
 
 ```txt
-Usage: cast keychain authorize [OPTIONS] <KEY_ADDRESS> [KEY_TYPE] [EXPIRY]
+Usage: cast wallet session [OPTIONS]
+       cast wallet session <COMMAND>
 
-Arguments:
-  <KEY_ADDRESS>
-          The key address to authorize
-
-  [KEY_TYPE]
-          Signature type: secp256k1, p256, or webauthn
-          
-          [default: secp256k1]
-
-  [EXPIRY]
-          Expiry timestamp (unix seconds). Defaults to u64::MAX (never expires)
-          
-          [default: 18446744073709551615]
+Commands:
+  create  Create a temporary Tempo session and persist it locally
+  revoke  Revoke a Tempo session key on-chain when provisioned, then clear local
+          key material
+  help    Print this message or the help of the given subcommand(s)
 
 Options:
-      --enforce-limits
-          Enforce spending limits for this key
+      --root <ADDRESS>
+          Root account that will authorize the temporary session
 
-      --limit <LIMITS>
-          Spending limit in TOKEN:AMOUNT format. Can be specified multiple times
+      --expires <DURATION>
+          Session lifetime, expressed as a duration like `10m`, `2h`, or `7d`
 
       --scope <SCOPE>
-          Call scope restriction in `TARGET[:SELECTORS[@RECIPIENTS]]` format.
-          TARGET alone allows all calls. `TARGET:transfer,approve` restricts to
-          those selectors. `TARGET:transfer@0x123` restricts selector to
-          specific recipients
+          Allowed call scope, in `TARGET[:SELECTORS[@RECIPIENTS]]` format
 
-      --scopes <SCOPES_JSON>
-          Call scope restrictions as a JSON array. Format:
-          `[{"target":"0x...","selectors":["transfer"]}]` or
-          `[{"target":"0x...","selectors":[{"selector":"transfer","recipients":["0x..."]}]}]`
+      --target <ADDRESS>
+          Allowed call target for issue-style `--target ... --selector ...`
+          input
 
-      --witness <WITNESS>
-          Optional TIP-1053 witness to bind to this on-chain authorization.
-          
-          `0x000...000` is a valid present witness and is distinct from omitting
-          the flag.
+      --selector <SELECTOR>
+          Function selector allowed for `--target`, such as `register(address)`
+
+      --spend-limit <SPEND_LIMITS>
+          Token spend limit, in `TOKEN:AMOUNT` or `TOKEN=AMOUNT` format
+
+      --for <COMMAND>
+          Command to run with the temporary Tempo session
 
   -h, --help
           Print help (see a summary with '-h')

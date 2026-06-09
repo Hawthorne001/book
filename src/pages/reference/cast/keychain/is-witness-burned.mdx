@@ -1,37 +1,24 @@
-## cast tx
+## cast keychain is-witness-burned
 
-Get information about a transaction
+Check whether a TIP-1053 key-authorization witness has been burned
 
 :::terminal
 
 ```bash
-$ cast tx --help
+$ cast keychain is-witness-burned --help
 ```
 
 ```txt
-Usage: cast tx [OPTIONS] [TX_HASH] [FIELD]
+Usage: cast keychain is-witness-burned [OPTIONS] <ACCOUNT> <WITNESS>
 
 Arguments:
-  [TX_HASH]
-          The transaction hash
+  <ACCOUNT>
+          Account whose witness burn set should be checked
 
-  [FIELD]
-          If specified, only get the given field of the transaction. If "raw",
-          the RLP encoded transaction will be printed
+  <WITNESS>
+          Witness to check. `bytes32(0)` is valid
 
 Options:
-      --from <FROM>
-          The sender of the transaction
-
-      --nonce <NONCE>
-          Nonce of the transaction
-
-      --raw
-          Print the raw RLP encoded transaction
-
-      --lane
-          Classify the transaction as Tempo T5 payment/general lane
-
   -h, --help
           Print help (see a summary with '-h')
 
@@ -118,15 +105,6 @@ Rpc options:
 
       --curl
           Print the equivalent curl command instead of making the RPC request
-
-      --to-request
-          If specified, the transaction will be converted to a
-          TransactionRequest JSON format
-
-  -n, --network <NETWORK>
-          Specify the Network for correct encoding
-          
-          [possible values: ethereum, tempo]
 
 Display options:
       --color <COLOR>
